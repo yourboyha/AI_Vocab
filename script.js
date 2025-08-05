@@ -59,11 +59,18 @@ function displayNextWord() {
 }
 
 function showFinalScore() {
+  const finalMessage = `ทำได้ ${score} คะแนน`;
   wordDisplay.textContent = "เยี่ยมมาก!";
-  feedbackDisplay.textContent = `ทำได้ ${score} คะแนน`;
+  feedbackDisplay.textContent = finalMessage;
   wordImage.classList.add('hidden');
   wordEmoji.textContent = '🎉';
   wordEmoji.classList.remove('hidden');
+
+  // Speak the final score
+  const utterance = new SpeechSynthesisUtterance(`เยี่ยมมาก! ${finalMessage}`);
+  utterance.lang = 'th-TH';
+  speechSynthesis.speak(utterance);
+
   setTimeout(() => showScreen(languageScreen), 3000);
 }
 
@@ -92,13 +99,24 @@ function showFeedback(isCorrect) {
   feedbackDisplay.classList.remove('feedback-animation', 'text-green-500', 'text-red-500');
   void feedbackDisplay.offsetWidth;
 
+  let feedbackText = '';
   if (isCorrect) {
-    feedbackDisplay.textContent = 'เก่งมาก!';
+    feedbackText = 'เก่งมาก!';
+    feedbackDisplay.textContent = feedbackText;
     feedbackDisplay.classList.add('text-green-500', 'feedback-animation');
   } else {
-    feedbackDisplay.textContent = 'ลองอีกครั้งนะ';
+    feedbackText = 'ลองอีกครั้งนะ';
+    feedbackDisplay.textContent = feedbackText;
     feedbackDisplay.classList.add('text-red-500', 'feedback-animation');
   }
+
+  // Speak the feedback text
+  if (speechSynthesis.speaking) {
+    speechSynthesis.cancel();
+  }
+  const utterance = new SpeechSynthesisUtterance(feedbackText);
+  utterance.lang = 'th-TH'; // Feedback is in Thai
+  speechSynthesis.speak(utterance);
 }
 
 startButton.addEventListener('click', () => showScreen(languageScreen));
