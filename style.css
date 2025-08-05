@@ -1,0 +1,43 @@
+body {
+  font-family: "Mitr", "Nunito", sans-serif;
+  background-color: #fef3c7; /* amber-100 */
+}
+.card {
+  background-color: white;
+  border-radius: 2rem;
+  box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1),
+    0 8px 10px -6px rgb(0 0 0 / 0.1);
+  transition: all 0.3s ease;
+}
+.btn {
+  border-radius: 1.5rem;
+  font-weight: 600;
+  padding: 1rem 2rem;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+}
+.btn:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -2px rgb(0 0 0 / 0.1);
+}
+.btn-icon {
+  border-radius: 50%;
+  width: 5rem;
+  height: 5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.feedback-animation {
+  animation: pop-in 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+}
+@keyframes pop-in {
+  0% {
+    transform: scale(0.5);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}

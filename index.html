@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="th">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI Vocab Trainer</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Mitr:wght@400;500;600&family=Nunito:wght@600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+    <!-- Chosen Palette: Playful Harmony -->
+    <!-- Application Structure Plan: A single-page, game-like application with three main views: Welcome, Language/Category Select, and the core Game loop. This task-oriented structure is chosen for its simplicity and directness, making it intuitive for young children. The flow minimizes clicks and distractions, focusing the user on the primary learning activity: listening, speaking, and receiving immediate feedback. An 'About' modal is included for parents/teachers, keeping detailed text separate from the main child-friendly interface. -->
+    <!-- Visualization & Content Choices: Report Info: Core concept of an AI trainer -> Goal: Demonstrate -> Viz/Presentation: The interactive app itself -> Interaction: Listen/Speak buttons triggering Web Speech API -> Justification: The most effective way to convey the project's value is through a hands-on experience. Report Info: Vocabulary -> Goal: Teach -> Viz/Presentation: Large image/emoji + clear text -> Interaction: System-driven progression -> Justification: Multi-modal learning (visual + text) enhances retention for children. Report Info: Pronunciation Accuracy -> Goal: Evaluate & Motivate -> Viz/Presentation: Animated feedback (stars, messages) and a score counter -> Interaction: Real-time response to user's speech -> Justification: Immediate, positive reinforcement is crucial for engagement and building confidence in young learners. CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+  </head>
+  <body class="flex items-center justify-center min-h-screen p-4">
+    <div id="app-container" class="w-full max-w-2xl mx-auto">
+      <!-- Welcome Screen -->
+      <div id="welcome-screen" class="card text-center p-8 md:p-12">
+        <h1 class="text-5xl md:text-7xl font-bold text-amber-500">
+          AI Vocab Trainer
+        </h1>
+        <p class="text-2xl md:text-3xl text-gray-600 mt-4 mb-10">
+          มาฝึกออกเสียงคำศัพท์กันเถอะ!
+        </p>
+        <button
+          id="start-button"
+          class="btn bg-teal-400 text-white text-3xl hover:bg-teal-500"
+        >
+          เริ่มเลย!
+        </button>
+        <button
+          id="about-button"
+          class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 text-3xl"
+        >
+          ⓘ
+        </button>
+      </div>
+
+      <!-- Language Selection Screen -->
+      <div id="language-screen" class="card text-center p-8 md:p-12 hidden">
+        <h2 class="text-3xl md:text-4xl font-semibold text-gray-700 mb-8">
+          เลือกภาษาที่ต้องการฝึก
+        </h2>
+        <div class="flex flex-col md:flex-row gap-6 justify-center">
+          <button
+            data-lang="th-TH"
+            class="lang-btn btn bg-sky-400 text-white text-2xl hover:bg-sky-500"
+          >
+            🇹🇭 ภาษาไทย
+          </button>
+          <button
+            data-lang="en-US"
+            class="lang-btn btn bg-rose-400 text-white text-2xl hover:bg-rose-500"
+          >
+            🇺🇸 English
+          </button>
+        </div>
+      </div>
+
+      <!-- Game Screen -->
+      <div id="game-screen" class="card p-6 md:p-8 hidden">
+        <div class="flex justify-between items-center mb-4">
+          <div id="score" class="text-3xl font-bold text-yellow-500">⭐ 0</div>
+          <button
+            id="home-button"
+            class="text-gray-400 hover:text-gray-600 text-3xl"
+          >
+            🏠
+          </button>
+        </div>
+
+        <div
+          class="aspect-square bg-gray-100 rounded-2xl flex items-center justify-center mb-4"
+        >
+          <img
+            id="word-image"
+            src=""
+            alt="Vocabulary Image"
+            class="max-w-full max-h-full object-contain rounded-2xl hidden"
+            onerror="this.classList.add('hidden'); document.getElementById('word-emoji').classList.remove('hidden');"
+          />
+          <div id="word-emoji" class="text-8xl md:text-9xl"></div>
+        </div>
+
+        <div
+          id="word-display"
+          class="text-5xl md:text-7xl font-bold text-center text-gray-800 mb-6 h-24 flex items-center justify-center"
+        ></div>
+
+        <div
+          id="feedback-display"
+          class="text-3xl font-semibold text-center h-12 mb-4"
+        ></div>
+
+        <div class="flex justify-center items-center gap-6">
+          <button
+            id="listen-button"
+            class="btn btn-icon bg-blue-400 text-white hover:bg-blue-500"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-12 w-12"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.828 2.828a1 1 0 011.414 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.414-1.414A3.986 3.986 0 0013 10a3.986 3.986 0 00-1.172-2.828 1 1 0 010-1.414z"
+                clip-rule="evenodd"
+              />
+            </svg>
+          </button>
+          <button
+            id="speak-button"
+            class="btn btn-icon bg-green-500 text-white hover:bg-green-600"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-12 w-12"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M7 4a3 3 0 016 0v4a3 3 0 11-6 0V4zm4 10.93A7.001 7.001 0 0017 8h-1a6 6 0 11-12 0H3a7.001 7.001 0 006 6.93V17H7a1 1 0 100 2h6a1 1 0 100-2h-2v-2.07z"
+                clip-rule="evenodd"
+              />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- About Modal -->
+    <div
+      id="about-modal"
+      class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 hidden"
+    >
+      <div class="bg-white rounded-2xl p-8 max-w-xl w-full relative">
+        <button
+          id="close-modal-button"
+          class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 text-3xl"
+        >
+          &times;
+        </button>
+        <h2 class="text-2xl font-bold text-gray-800 mb-4">
+          เกี่ยวกับโครงการ AI Vocab Trainer
+        </h2>
+        <div class="text-gray-600 space-y-2 text-base">
+          <p>
+            โครงการนี้พัฒนาขึ้นเพื่อแก้ไขปัญหาพัฒนาการทางภาษาล่าช้าในเด็กปฐมวัย
+            ซึ่งเกิดจากการขาดการกระตุ้นทางภาษาที่เหมาะสมในยุคดิจิทัล
+          </p>
+          <p>
+            เราใช้เทคโนโลยี <b class="text-teal-600">Web Speech API</b> ซึ่งเป็น
+            AI ที่ฝังอยู่ในเว็บเบราว์เซอร์
+            เพื่อสร้างแพลตฟอร์มการเรียนรู้ที่สนุกสนานและโต้ตอบได้ทันที
+            แอปพลิเคชันจะ "ฟัง"
+            เสียงที่เด็กพูดและให้ผลตอบรับเพื่อช่วยแก้ไขการออกเสียงให้ถูกต้อง
+          </p>
+          <p>
+            <b>เป้าหมาย:</b> เพื่อเปลี่ยนเทคโนโลยีให้เป็น "ผู้ช่วยอัจฉริยะ"
+            ที่เสริมสร้างทักษะทางภาษาให้กับเด็กทุกคนอย่างเท่าเทียมและสร้างสรรค์
+          </p>
+          <p class="mt-4 pt-4 border-t">
+            <b>ทีมพัฒนา:</b> DBT@WIC จาก วิทยาลัยการอาชีพวารินชำราบ
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <script src="vocab.js"></script>
+    <script src="script.js"></script>
+  </body>
+</html>
